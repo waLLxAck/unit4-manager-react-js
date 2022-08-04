@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  margin-bottom: 20px;
 }
 
 .App-logo {
@@ -32,7 +32,21 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ------- customize primary button color -------- */
+
+.btn-primary.button-variant {
+  background-color: #5caf50;
+  border-color: rgb(10, 88, 0) !important;
+
+}
+
+.btn-primary.button-variant:hover {
+  background-color: #0c6800;
+  border-color: rgb(10, 88, 0) !important;
 }
