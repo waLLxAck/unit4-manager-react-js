@@ -12,7 +12,7 @@ class Auth extends Component {
             <>
                 <div class="mb-2">
                     <input type="text" class="form-control" id={this.environmentName + "-company-id"} placeholder="Company ID" />
-                    <small class="form-text text-muted">e.g. X10</small>
+                    <small class="form-text text-muted">e.g. BE</small>
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" id={this.environmentName + "-access-token-url"} placeholder="Access token" />
@@ -24,7 +24,7 @@ class Auth extends Component {
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" id={this.environmentName + "-client-secret"} placeholder="Client secret" />
-                    <small class="form-text text-muted">e.g. 32253d53-3541-4916-a898-9220357d8141</small>
+                    <small class="form-text text-muted">e.g. 32953d53-3541-4216-a898-9283457d8141</small>
                 </div>
             </>
         )

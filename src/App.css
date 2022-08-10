@@ -50,3 +50,8 @@
   background-color: #0c6800;
   border-color: rgb(10, 88, 0) !important;
 }
+
+.slide {
+  width: 100px;
+  height: 100px
+}

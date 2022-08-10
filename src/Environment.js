@@ -24,7 +24,7 @@ class Environment extends Component {
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" id={this.environmentName + "-swagger-api"} placeholder="Swagger URL" />
-                    <small class="form-text text-muted">e.g. https://eu.unit4cloud.com/swagger/tenantId</small>
+                    <small class="form-text text-muted">e.g. https://au01-npe.erpx-api.unit4cloud.com/swagger/?tenant=30713278-9cce-43c9-8816-e59c34e8e5c4</small>
                 </div>
                 <div class="mb-2">
                     < Auth environmentName={this.environmentName} id={this.props.id} />
