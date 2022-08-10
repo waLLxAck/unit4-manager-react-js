@@ -14,6 +14,15 @@ const CsvHandler = () => {
         e.target.style.height = (25 + e.target.scrollHeight) + "px";
     }
 
+    const smallDescriptionTextArea = () => {
+        // if textArea contains 'CurrentItem' then add 'small' tage after textArea
+        if (text.includes('CurrentItem')) {
+            return (
+                <small class="form-text text-muted">Note: CurrentItem should be a liquid variable you have that holds the header text.</small>
+            )
+        }
+    }
+
     // useEffect to change size of textarea to fit text
     useEffect(() => {
         const textArea = document.getElementById("exampleFormControlTextarea1");
@@ -23,7 +32,7 @@ const CsvHandler = () => {
 
     const textArea = () => {
         return (
-            <div className="row mt-3">
+            <div className="row">
                 <div className="col-12">
                     <textarea
                         className="form-control"
@@ -50,6 +59,7 @@ const CsvHandler = () => {
                         {/* window for dropping files with dotted borders */}
                         <DropzoneComponent textAreaFunction={setText} />
                         {textArea()}
+                        {smallDescriptionTextArea()}
                     </div>
                 </div>
             </div>

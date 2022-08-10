@@ -27,8 +27,6 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-const delimiter = ',';
-
 function DropzoneComponent(props) {
     const [files, setFiles] = useState([]);
 
@@ -82,6 +80,10 @@ function DropzoneComponent(props) {
             reader.onload = (e) => {
                 // print header from csv file
                 const header = e.target.result.split("\n")[0];
+
+                // figure out the delimiter
+                const delimiter = header.includes(',') ? ',' : ';';
+
                 const fields = header.split(delimiter);
 
                 const newFields = fields.map(field => {
@@ -101,18 +103,19 @@ function DropzoneComponent(props) {
                     return field;
                 }).filter(field => field !== "");
 
-                var liquidScript = ''
+                var liquidScript = `{%- header_item = CurrentItem | string.strip_newlines | string.strip | string.split '${delimiter}' -%}\n\n`;
 
                 newFields.forEach(field => {
                     // get field index
                     const index = newFields.indexOf(field);
-                    const liquid = `{%- assign ${field} = header_item[${index}] -%}\n`;
-                    liquidScript += liquid;
+                    // if last item, don't add newline, else add
+                    var newline = index === newFields.length - 1 ? '' : '\n';
+                    const liquid = `{%- assign ${field} = header_item[${index}] -%}`;
+                    liquidScript += liquid + newline;
                 });
 
                 // set text area to liquid script
                 props.textAreaFunction(liquidScript);
-
             }
             reader.readAsText(file);
         })
@@ -120,14 +123,13 @@ function DropzoneComponent(props) {
 
     return (
         <section>
-            <div {...getRootProps({ style })}>
+            <div class="mb-3" {...getRootProps({ style })}>
                 <input {...getInputProps()} />
                 <div>Drag and drop your csv file here. Or click to attach a file.</div>
             </div>
             <aside>
-                <div class="row mt-3">
-                    {thumbs}
-                </div>
+                {/* if 'thumbs' isn't empty */}
+                {thumbs.length > 0 && <div class="row mb-3">{thumbs}</div>}
             </aside>
         </section>
     )
