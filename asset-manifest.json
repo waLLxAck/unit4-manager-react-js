@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/unit4-manager-react-js/static/css/main.1703f855.css",
-    "main.js": "/unit4-manager-react-js/static/js/main.e2e96b72.js",
+    "main.js": "/unit4-manager-react-js/static/js/main.ed43b270.js",
     "static/js/787.28cb0dcd.chunk.js": "/unit4-manager-react-js/static/js/787.28cb0dcd.chunk.js",
     "static/media/mika-baumeister-Wpnoqo2plFA-unsplash.jpg": "/unit4-manager-react-js/static/media/mika-baumeister-Wpnoqo2plFA-unsplash.d9555f727fe3b873988f.jpg",
     "static/media/SPLogo.png": "/unit4-manager-react-js/static/media/SPLogo.47695ad94bd966daf7fa.png",
@@ -39,11 +39,11 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/unit4-manager-react-js/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/unit4-manager-react-js/index.html",
     "main.1703f855.css.map": "/unit4-manager-react-js/static/css/main.1703f855.css.map",
-    "main.e2e96b72.js.map": "/unit4-manager-react-js/static/js/main.e2e96b72.js.map",
+    "main.ed43b270.js.map": "/unit4-manager-react-js/static/js/main.ed43b270.js.map",
     "787.28cb0dcd.chunk.js.map": "/unit4-manager-react-js/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1703f855.css",
-    "static/js/main.e2e96b72.js"
+    "static/js/main.ed43b270.js"
   ]
 }
