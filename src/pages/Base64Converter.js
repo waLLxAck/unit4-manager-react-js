@@ -9,6 +9,7 @@ const Base64Converter = () => {
     const [base64String, setBase64String] = React.useState("");
     const [fileType, setFileType] = React.useState("");
     const [fileExtension, setFileExtension] = React.useState("");
+    const [supportedFileTypes, setSupportedFileTypes] = React.useState([]);
 
     // usememo for signatures
     const signatures = React.useMemo(() => {
@@ -44,6 +45,15 @@ const Base64Converter = () => {
             }
             return "Not supported";
         });
+
+        // set supported file types
+        setSupportedFileTypes(() => {
+            const supportedFileTypes = [];
+            for (const signature in signatures) {
+                supportedFileTypes.push(signatures[signature]);
+            }
+            return supportedFileTypes;
+        });
     }, [base64String, signatures]);
 
     // use effect to update file extension on file type change
@@ -53,7 +63,7 @@ const Base64Converter = () => {
         setFileExtension(() => {
             // check if file type is null
             if (fileType === "Not supported") {
-                return "Not supported";
+                return fileType;
             }
             const extension = fileType.split("/")[1];
             return extension;
@@ -64,8 +74,8 @@ const Base64Converter = () => {
     function base64StringtoFile() {
         // if file type is not found, alert the user
         if (fileType === null) {
-            alert("File type not found.");
-            return null;
+            alert("File type not supported.");
+            return fileType;
         }
 
         // generate file name
@@ -96,13 +106,7 @@ const Base64Converter = () => {
             <div className="row">
                 <div className="col-12">
                     <h4>Base64 to file</h4>
-                    <p>Convert base64 to file. Supported types include: {() => {
-                        const types = [];
-                        for (const signature in signatures) {
-                            types.push(signatures[signature]);
-                        }
-                        return types.join(", ");
-                    }}</p>
+                    <p>Convert base64 to file. Supported file types: {supportedFileTypes.join(", ")}.</p>
                     <div className="row">
                         <div className="col-12">
                             <div className="form-group">

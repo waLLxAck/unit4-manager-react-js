@@ -10,7 +10,7 @@ function ToolComponent(props) {
                     <img className="card-img-top" src={props.image} alt="Photo by Mika Baumeister on Unsplash" />
                     <h5 className="card-title mt-3">{props.title}</h5>
                     <p className="card-text">{props.description}</p>
-                    <Link to={props.link} className="btn btn-primary">Go somewhere</Link>
+                    <Link to={props.link} className="btn btn-primary">Use tool »</Link>
                 </div>
             </div>
         </div>
