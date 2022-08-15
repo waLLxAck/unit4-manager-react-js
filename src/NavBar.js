@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { Nav } from 'react-bootstrap';
 
 const NavBar = () => {
 
@@ -11,40 +11,38 @@ const NavBar = () => {
     const devButton = () => {
         if (window.location.href.includes("localhost")) {
             return (
-                <button class="btn btn-primary button-variant" onClick={test}>Dev Button</button>
+                <Link to="/dev" className="nav-link" ><button class="btn btn-primary button-variant" onClick={test}>Dev Button</button></Link>
             )
         }
     }
 
+    // change the color of the active link
+    const activeStyle = { color: "orange" };
+
     return (
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <Link to="/" className="nav-item btn">
-                    <a class="navbar-brand" href="#">Unit4</a>
-                </Link>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <Link to="/" className="nav-item btn">
-                            <a class="nav-link" href="#">Project Quickstart</a>
-                        </Link>
-                        <Link to="/tools" className="nav-item btn">
-                            <a class="nav-link" href="#">Tools</a>
-                        </Link>
-                    </ul>
-                    <div class="ml-auto"></div>
-                    <form class="d-flex">
-                        {/* <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" /> */}
-                        {/* if the current URL starts with localhost:3000, display button */}
-
-
+        <>
+            <Nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <div className="container-fluid">
+                    <Link to="/" className="navbar-brand" >Unit4</Link>
+                    <button className="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <Nav.Item className="navbar-nav">
+                            <Nav.Link>
+                                <Link to="/" className="nav-link" activeStyle={activeStyle}>Project Quickstart</Link>
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item className="navbar-nav">
+                            <Nav.Link>
+                                <Link to="/tools" className="nav-link" activeStyle={activeStyle}>Tools</Link>
+                            </Nav.Link>
+                        </Nav.Item>
                         {devButton()}
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </Nav>
+        </>
     );
 }
 

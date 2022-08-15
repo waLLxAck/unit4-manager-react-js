@@ -1,5 +1,4 @@
 import React from 'react';
-import SPLogo from './SPLogo.png';
 import CSVImage from './img/mika-baumeister-Wpnoqo2plFA-unsplash.jpg';
 import { Link } from 'react-router-dom';
 

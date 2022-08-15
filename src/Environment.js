@@ -5,14 +5,14 @@ class Environment extends Component {
     constructor(props) {
         super(props);
         this.environmentName = props.environmentName;
-        this.id = props.id;
+        this.id = 0;
     }
 
     render() {
         return (
             <>
                 <div class="mb-2 justify-content-center">
-                    <label for={this.environmentName} id={this.environmentName} >{this.environmentName.toUpperCase()}</label>
+                    <label for={this.environmentName} id={this.environmentName} >{this.environmentName}</label>
                 </div>
                 <div class="mb-2">
                     <input type="text" class="form-control" id={this.environmentName + "-extension-kit"} placeholder="Extension Kit URL" />

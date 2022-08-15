@@ -5,9 +5,9 @@ import Footer from './Footer';
 
 const App = () => {
     return (
-        <div className="App">
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <NavBar />
-            <div className="container mt-5">
+            <div className="container mt-3">
                 <Main />
             </div>
             <Footer />

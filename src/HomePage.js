@@ -1,24 +1,22 @@
 import './App.css';
 import Environment from './Environment.js';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 function HomePage() {
-  // count the number of urls created
-  var url_count = 0;
-  // count the number of environments created
-  var environment_count = 0;
-
+  const all_environments = ["PREV", "ACPT", "PROD"];
   // use state to store the environments
   const [environments_list, setEnvironments] = useState([]);
 
-  // initial environments
-  const initial_environments = ["prev", "acpt", "prod"];
+  // use state to store the environment components
+  const [environmentComponents, setEnvironmentComponents] = useState([]);
 
-  const environments = environments_list.map(environment => {
-    return <Environment environmentName={environment} id={environment_count++} />
-  }
-  );
+  // create environment components when the environments_list changes
+  useEffect(() => {
+    setEnvironmentComponents(environments_list.map((environment) => {
+      return <Environment environmentName={environment} />
+    }));
+  }, [environments_list]);
 
   function download_project_json() {
     var project_name = document.getElementById("project_name").value;
@@ -69,7 +67,6 @@ function HomePage() {
 
   function get_all_environments() {
     var environments = [];
-    var environments_object = document.getElementById("environments");
     // build array of environment objects
     var environment_object = {}
 
@@ -82,7 +79,7 @@ function HomePage() {
       const clientId = document.getElementById(environment + "-client-id").value;
       const clientSecret = document.getElementById(environment + "-client-secret").value;
       environment_object = {
-        "name": environment,
+        "name": environment.toLowerCase(),
         "extension_kit": extensionKitUrl,
         "erp_lab": erpLabUrl,
         "swagger_api": swaggerApiUrl,
@@ -99,10 +96,10 @@ function HomePage() {
 
     // compare environments with initial environments; compare the environment name
     // if environment is not in initial environments, add it as an empty object
-    initial_environments.forEach((environment) => {
+    all_environments.forEach((environment) => {
       if (!environments_list.includes(environment)) {
         environment_object = {
-          "name": environment,
+          "name": environment.toLowerCase(),
           "extension_kit": "",
           "erp_lab": "",
           "swagger_api": "",
@@ -117,25 +114,8 @@ function HomePage() {
       }
     }
     );
+
     return environments;
-  }
-
-  // function that toggles the visibility of the placeholder attribute text of all elements in the form
-  function toggle_all_placeholder_attributes() {
-    var elements = document.getElementsByTagName("input");
-    for (var i = 0; i < elements.length; i++) {
-      var element = elements[i];
-      if (element.hasAttribute("placeholder")) {
-        // store the original placeholder text with reference to the element
-        element.setAttribute("data-placeholder", element.getAttribute("placeholder"));
-        // remove the placeholder text
-        element.removeAttribute("placeholder");
-      } else {
-        // restore the placeholder text
-        element.setAttribute("placeholder", element.getAttribute("data-placeholder"));
-      }
-    }
-
   }
 
   // if environment is checked, add it to the environments list;
@@ -146,6 +126,8 @@ function HomePage() {
       // if environment is not in the environments list, add it
       if (!environments_list.includes(e.target.value)) {
         setEnvironments([...environments_list, e.target.value]);
+        console.log("Reached");
+        console.log([...environments_list, e.target.value])
       }
     } else {
       // remove environment from the environments list
@@ -164,11 +146,11 @@ function HomePage() {
     }
   }
 
-  const checkboxes = initial_environments.map((environment) => {
+  const checkboxes = all_environments.map((environment) => {
     return (
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id={environment + "-checkbox"} onClick={toggle_environment} value={environment} />
-        <label class="form-check-label" for={environment + "-checkbox"}>{environment.toUpperCase()}</label>
+        <label class="form-check-label" for={environment + "-checkbox"}>{environment}</label>
       </div>
     )
   }
@@ -193,18 +175,18 @@ function HomePage() {
         <button type="button" class="btn btn-primary" onClick={() => {
           let url = document.createElement('div')
           url.className = 'mb-3'
-          // increment the url count
-          url_count++;
+          // variable that holds the number of urls
+          let url_number = document.getElementById("urls").childNodes.length + 1;
           url.innerHTML = `
               <div class="mb-1">
             <hr/>
             </div>
             <div class="mb-2">
-              <input type="text" class="form-control" id="url-name-${url_count}" placeholder="Website Name" />
+              <input type="text" class="form-control" id="url-name-${url_number}" placeholder="Website Name" />
               <small class="form-text text-muted">e.g. Third Party System documentation</small>
             </div>
             <div class="mb-2">
-              <input type="text" class="form-control" id="url-${url_count}" placeholder="Website URL" />
+              <input type="text" class="form-control" id="url-${url_number}" placeholder="Website URL" />
               <small class="form-text text-muted">e.g. https://thirdpartysystem.com/documentation</small>
             </div>
             `
@@ -219,16 +201,13 @@ function HomePage() {
           let url = document.getElementById('urls').lastChild;
           // remove the last url
           document.getElementById('urls').removeChild(url);
-          // decrement the url count
-          url_count--;
         }
         }>Remove URL</button>
       </div>
       {/* Button that says 'Add Environment' with onclick method; similar to the one above */}
 
       <div id="environments" class="mb-3">
-        {/* for each environment add an 'Environment' element */}
-        {environments}
+        {environmentComponents}
       </div>
 
       {/* Button that says 'Add Authorization' with onclick method that adds a label and a textfield to the form */}
