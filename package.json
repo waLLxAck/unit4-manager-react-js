@@ -13,6 +13,9 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "random-words": "^1.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
@@ -34,6 +37,10 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "browser": {
+    "fs": false,
+    "path": false
   },
   "browserslist": {
     "production": [

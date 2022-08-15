@@ -148,55 +148,58 @@ function HomePage() {
 
   const checkboxes = all_environments.map((environment) => {
     return (
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id={environment + "-checkbox"} onClick={toggle_environment} value={environment} />
-        <label class="form-check-label" for={environment + "-checkbox"}>{environment}</label>
+      <div className="form-check form-check-inline">
+        <input className="form-check-input" type="checkbox" id={environment + "-checkbox"} onClick={toggle_environment} value={environment} />
+        <label className="form-check-label" htmlFor={environment + "-checkbox"}>{environment}</label>
       </div>
     )
   }
   )
 
   return (
-
-    <form class="mt-3" >
-      <div class="mb-3">
-        <input type="text" class="form-control" id="project_name" placeholder="Project Name" />
-        <small class="form-text text-muted">e.g. Sandbox Environment</small>
+    <form className="mt-3" >
+      {/* add title with bootstrap classes */}
+      <h1 className="display-4">Project File Builder</h1>
+      <p className="lead">Complete your project information and press the "Download Project JSON" button to receive your file.</p>
+      <hr className="my-4" />
+      <div className="mb-3">
+        <input type="text" className="form-control" id="project_name" placeholder="Project Name" />
+        <small className="form-text text-muted">e.g. Sandbox Environment</small>
       </div>
-      <div class="mb-3">
-        <input type="text" class="form-control" id="swagger_api" placeholder="Swagger API" />
-        <small class="form-text text-muted">e.g. https://au01-npe.erpx-api.unit4cloud.com/swagger/?tenant=30713278-9cce-43c9-8816-e59c34e8e5c4</small>
+      <div className="mb-3">
+        <input type="text" className="form-control" id="swagger_api" placeholder="Swagger API" />
+        <small className="form-text text-muted">e.g. https://au01-npe.erpx-api.unit4cloud.com/swagger/?tenant=30713278-9cce-43c9-8816-e59c34e8e5c4</small>
       </div>
-      <div id="urls" class="mb-3">
+      <div id="urls" className="mb-3">
       </div>
-      <div class="mb-3 d-flex justify-content-center">
+      <div className="mb-3 d-flex justify-content-center">
         {checkboxes}
 
-        <button type="button" class="btn btn-primary" onClick={() => {
+        <button type="button" className="btn btn-primary" onClick={() => {
           let url = document.createElement('div')
           url.className = 'mb-3'
           // variable that holds the number of urls
           let url_number = document.getElementById("urls").childNodes.length + 1;
           url.innerHTML = `
-              <div class="mb-1">
+              <div className="mb-1">
             <hr/>
             </div>
-            <div class="mb-2">
-              <input type="text" class="form-control" id="url-name-${url_number}" placeholder="Website Name" />
-              <small class="form-text text-muted">e.g. Third Party System documentation</small>
+            <div className="mb-2">
+              <input type="text" className="form-control" id="url-name-${url_number}" placeholder="Website Name" />
+              <small className="form-text text-muted">e.g. Third Party System documentation</small>
             </div>
-            <div class="mb-2">
-              <input type="text" class="form-control" id="url-${url_number}" placeholder="Website URL" />
-              <small class="form-text text-muted">e.g. https://thirdpartysystem.com/documentation</small>
+            <div className="mb-2">
+              <input type="text" className="form-control" id="url-${url_number}" placeholder="Website URL" />
+              <small className="form-text text-muted">e.g. https://thirdpartysystem.com/documentation</small>
             </div>
             `
           document.getElementById('urls').appendChild(url)
         }
         }>Add URL</button>
         {/* add padding inbetween buttons */}
-        <div class="mx-3"></div>
+        <div className="mx-3"></div>
 
-        <button type="button" class="btn btn-danger" onClick={() => {
+        <button type="button" className="btn btn-danger" onClick={() => {
           // get the last url
           let url = document.getElementById('urls').lastChild;
           // remove the last url
@@ -206,13 +209,13 @@ function HomePage() {
       </div>
       {/* Button that says 'Add Environment' with onclick method; similar to the one above */}
 
-      <div id="environments" class="mb-3">
+      <div id="environments" className="mb-3">
         {environmentComponents}
       </div>
 
       {/* Button that says 'Add Authorization' with onclick method that adds a label and a textfield to the form */}
       {/* button 'Download Project JSON' with on click method */}
-      <button type="button" class="btn btn-primary button-variant" onClick={download_project_json}>Download Project JSON</button>
+      <button type="button" className="btn btn-primary button-variant" onClick={download_project_json}>Download Project JSON</button>
     </form>
   );
 }

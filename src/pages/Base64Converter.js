@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import sampleBinaryString from '../text/sample-binary-string.txt';
 
 
-const Dev = () => {
+const Base64Converter = () => {
     // base64 string state
     const [base64String, setBase64String] = React.useState("");
     const [fileType, setFileType] = React.useState("");
@@ -160,4 +160,4 @@ const Dev = () => {
     );
 }
 
-export default Dev;
+export default Base64Converter;
