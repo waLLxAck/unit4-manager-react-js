@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function ToolComponent(props) {
     return (
-        <div className="col-3 my-2">
+        <div className="col-3 my-2" style={{ minWidth: "300px" }}>
             <div className="card h-100">
                 <div className="card-body">
                     <img className="card-img-top" src={props.image} alt="Photo by Mika Baumeister on Unsplash" />

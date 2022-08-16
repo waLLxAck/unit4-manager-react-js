@@ -18,7 +18,7 @@ const CsvHandler = () => {
         // if textArea contains 'CurrentItem' then add 'small' tage after textArea
         if (text.includes('CurrentItem')) {
             return (
-                <small class="form-text text-muted">Note: CurrentItem should be a liquid variable you have that holds the header text.</small>
+                <small class="form-text text-muted">Note: <b>CurrentItem</b> should be a liquid variable that holds <b>just</b> the header text.</small>
             )
         }
     }

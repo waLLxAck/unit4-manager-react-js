@@ -1,10 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolComponent from './components/ToolComponent';
 
 import CSVImage from './img/mika-baumeister-Wpnoqo2plFA-unsplash.jpg';
 import Base64Image from './img/base64 - encode, decode.png';
 
+function useWindowSize() {
+    // Initialize state with undefined width/height so server and client renders match
+    // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+    const [windowSize, setWindowSize] = useState({
+        width: undefined,
+        height: undefined,
+    });
+    useEffect(() => {
+        // Handler to call on window resize
+        function handleResize() {
+            // Set window width/height to state
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        }
+        // Add event listener
+        window.addEventListener("resize", handleResize);
+        // Call handler right away so state gets updated with initial window size
+        handleResize();
+        // Remove event listener on cleanup
+        return () => window.removeEventListener("resize", handleResize);
+    }, []); // Empty array ensures that effect is only run on mount
+    return windowSize;
+}
+
 const Tools = () => {
+    const [mobileView, setMobileView] = React.useState("");
+    const windowSize = useWindowSize();
+
+    console.log("windowSize: " + windowSize.width);
+    console.log("mobileView: " + mobileView);
+
+    React.useEffect(() => {
+        if (windowSize.width < 768) {
+            setMobileView('justify-content-center');
+        } else {
+            setMobileView('');
+        }
+    }, [windowSize]);
+
     // state for tools
     const [tools, setTools] = React.useState([
         {
@@ -87,7 +127,7 @@ const Tools = () => {
                             <div className="card-header">
                                 <h4 className="my-0 font-weight-normal">Tools</h4>
                             </div>
-                            <div className="card-body row">
+                            <div className={`card-body row ${mobileView}`}>
                                 {tools.map((tool, index) => {
                                     // check if 3 tools are already displayed in a row, if so, create a new row
                                     if (index % 4 === 0) {
