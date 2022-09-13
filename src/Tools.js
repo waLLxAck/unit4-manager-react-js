@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ToolComponent from './components/ToolComponent';
 
-import CSVImage from './img/mika-baumeister-Wpnoqo2plFA-unsplash.jpg';
+import CSVImage from './img/csv-handler.png';
 import Base64Image from './img/base64 - encode, decode.png';
+import JSONObjectToLiquidVariablesImage from './img/JSON-Object-to-Liquid-Variables.png';
 
 function useWindowSize() {
     // Initialize state with undefined width/height so server and client renders match
@@ -58,7 +59,14 @@ const Tools = () => {
             description: "Converts files to base64 strings and vice versa.",
             image: Base64Image,
             link: "/tools/base64-converter"
-        }]);
+        },
+        {
+            title: "JSON Object to Liquid Variables (beta)",
+            description: "Generates liquid variables for all the fields in a JSON object.",
+            image: JSONObjectToLiquidVariablesImage,
+            link: "/tools/json-object-to-liquid-variables"
+        }
+    ]);
 
 
     return (
