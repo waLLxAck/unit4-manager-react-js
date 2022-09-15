@@ -150,7 +150,7 @@ function HomePage() {
     return (
       <div className="form-check form-check-inline">
         <input className="form-check-input" type="checkbox" id={environment + "-checkbox"} onClick={toggle_environment} value={environment} />
-        <label className="form-check-label" htmlFor={environment + "-checkbox"}>{environment}</label>
+        <label className="form-check-label" for={environment + "-checkbox"}>{environment}</label>
       </div>
     )
   }
@@ -181,16 +181,16 @@ function HomePage() {
           // variable that holds the number of urls
           let url_number = document.getElementById("urls").childNodes.length + 1;
           url.innerHTML = `
-              <div className="mb-1">
+              <div class="mb-1">
             <hr/>
             </div>
-            <div className="mb-2">
-              <input type="text" className="form-control" id="url-name-${url_number}" placeholder="Website Name" />
-              <small className="form-text text-muted">e.g. Third Party System documentation</small>
+            <div class="mb-2">
+              <input type="text" class="form-control" id="url-name-${url_number}" placeholder="Website Name" />
+              <small class="form-text text-muted">e.g. Third Party System documentation</small>
             </div>
-            <div className="mb-2">
-              <input type="text" className="form-control" id="url-${url_number}" placeholder="Website URL" />
-              <small className="form-text text-muted">e.g. https://thirdpartysystem.com/documentation</small>
+            <div class="mb-2">
+              <input type="text" class="form-control" id="url-${url_number}" placeholder="Website URL" />
+              <small class="form-text text-muted">e.g. https://thirdpartysystem.com/documentation</small>
             </div>
             `
           document.getElementById('urls').appendChild(url)
