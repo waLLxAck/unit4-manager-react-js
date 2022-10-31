@@ -44,7 +44,7 @@ function DropzoneComponent(props) {
         isDragReject
     } = useDropzone({
         onDrop,
-        accept: 'text/csv'
+        accept: 'application/json'
     });
 
     const style = useMemo(() => ({
@@ -76,56 +76,28 @@ function DropzoneComponent(props) {
 
     useEffect(() => {
         files.forEach(file => {
+            // display file contents in text area
             const reader = new FileReader();
-            reader.onload = (e) => {
-                // print header from csv file
-                const header = e.target.result.split("\n")[0];
-
-                // figure out the delimiter
-                const delimiter = header.includes(',') ? ',' : ';';
-
-                const fields = header.split(delimiter);
-
-                const newFields = fields.map(field => {
-                    // if field is empty, replace with "empty_field"
-                    if (field === "") {
-                        return "empty_field";
-                    }
-                    // make lowercase
-                    field = field.toLowerCase();
-                    // replace spaces with underscores
-                    field = field.replace(/ /g, "_");
-                    // remove special characters
-                    field = field.replace(/[^a-zA-Z0-9]/g, '');
-                    // remove numbers
-                    field = field.replace(/[0-9]/g, '');
-
-                    return field;
-                }).filter(field => field !== "");
-
-                var liquidScript = `{%- header_item = CurrentItem | string.strip_newlines | string.strip | string.split '${delimiter}' -%}\n\n`;
-
-                newFields.forEach(field => {
-                    // get field index
-                    const index = newFields.indexOf(field);
-                    // if last item, don't add newline, else add
-                    var newline = index === newFields.length - 1 ? '' : '\n';
-                    const liquid = `{%- assign ${field} = header_item[${index}] -%}`;
-                    liquidScript += liquid + newline;
-                });
-
-                // set text area to liquid script
-                props.textAreaFunction(liquidScript);
+            reader.onload = function (e) {
+                // try convert to JSON
+                try {
+                    const json = JSON.parse(e.target.result);
+                    props.textAreaFunction(json);
+                } catch (e) {
+                    console.log(e);
+                    // send error to parent as an object
+                    props.textAreaFunction({ error: e });
+                }
             }
             reader.readAsText(file);
-        })
+        });
     }, [files]);
 
     return (
         <section>
             <div className="mb-3" {...getRootProps({ style })}>
                 <input {...getInputProps()} />
-                <div>Drag and drop your csv file here. Or click to attach a file.</div>
+                <div>Drag and drop your Extension Kit flow JSON here. Or click to attach a file.</div>
             </div>
             <aside>
                 {/* if 'thumbs' isn't empty */}

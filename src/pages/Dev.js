@@ -1,82 +1,268 @@
 import React, { useEffect } from 'react';
+import DropzoneComponent from '../components/ExtensionKitDocumentationDropzone';
+import ExtensionKitFlow from '../classes/ExtensionKitFlow';
+
 
 const Dev = () => {
-    const [json_object, setJsonObject] = React.useState(null);
-    const [liquid_code, setLiquidCode] = React.useState("");
+    const [flowJson, setFlowJson] = React.useState({});
+    const [flowJsonIsLoaded, setFlowJsonIsLoaded] = React.useState(false);
+    const [smallDescriptionTextArea, setSmallDescriptionTextArea] = React.useState('');
+    const [displayedValue, setDisplayedValue] = React.useState('');
+    const [tableData, setTableData] = React.useState([]);
+    const [flowTriggerDescripton, setFlowTriggerDescripton] = React.useState('');
 
+    function handleTextChange(e) {
+        setDisplayedValue(e.target.value);
+    }
+
+    // // use ExtensionKitFlow class
+    // const extensionKitFlow = new ExtensionKitFlow(flowJson);
+
+    // set flowJsonIsLoaded to true when the flowJson is loaded and is not empty
     useEffect(() => {
-        // try parse json
-        try {
-            setLiquidCode(printLiquidCodeFromJson(json_object, ''))
+        if (flowJson && Object.keys(flowJson).length > 0) {
+            setFlowJsonIsLoaded(true);
         }
-        catch (e) {
-            setLiquidCode('Invalid JSON')
+    }, [flowJson]);
+
+    // if flowJsonIsLoaded is true, set the tableData
+    useEffect(() => {
+        if (flowJsonIsLoaded) {
+            console.log(flowJson);
+            adjustSize();
+            setImportStatus();
+            processFlowTriggerDescription();
         }
+    }, [flowJsonIsLoaded]);
 
-    }, [json_object]);
-
-    const handleJsonChange = (e) => {
-        try {
-            setJsonObject(JSON.parse(e.target.value));
+    // if flowTriggerDescripton changes, generate table again
+    useEffect(() => {
+        if (flowTriggerDescripton) {
+            generateTable();
         }
-        catch (e) {
-            setJsonObject(null);
-        }
-    }
+    }, [flowTriggerDescripton]);
 
-    let liquid_code_string = ""
-
-    // function that prints all the keys of the json object and their respective paths starting from the root
-    function printLiquidCodeFromJson(json, path) {
-        liquid_code_string = "{%- assign json_object = CurrentItem -%}\n\n"
-        for (let key in json) {
-            if (Object.prototype.toString.call(json[key]) === "[object Array]") {
-                // get the first element of the array
-                let firstElement = json[key][0];
-                printLiquidCodeFromJson(firstElement, `${path}["${key}"][0]`);
-            } else if (typeof json[key] === "object") {
-                printLiquidCodeFromJson(json[key], `${path}["${key}"]`);
+    function setImportStatus() {
+        var smallNote = ''
+        var color = ''
+        if (Object.keys(flowJson).length !== 0) {
+            if (Object.keys(flowJson).includes('FlowDefinitions')) {
+                smallNote = 'Extension Kit flow detected.'
+                color = 'text-success'
             } else {
-                liquid_code_string += `{%- assign ${pathToLiquidVariable(path)}${key} = json_object${path}["${key}"] -%}\n`
+                console.log(flowJson);
+                smallNote = 'Error. Unable to detect Extension Kit flow.'
+                color = 'text-danger'
             }
-        };
-        return liquid_code_string;
+            setSmallDescriptionTextArea(<small className={`form-text ${color}`}>{smallNote}</small>)
+        }
     }
 
-    function pathToLiquidVariable(path) {
-        // change the path to a liquid variable
-        // e.g. json_object["name"]["firstName"] -> name_firstName
+    function adjustSize() {
+        const textArea = document.getElementById("exampleFormControlTextarea1");
+        // if flowJson is not empty
+        if (Object.keys(flowJson).length !== 0) {
+            //set height of textArea to 500px
+            textArea.style.height = "300px";
+        } else {
+            //set height of textArea to 1px
+            textArea.style.height = "1px";
+        }
+    }
 
-        // remove [" and "]
-        path = path.replace(/\["/g, '').replace(/\"\]/g, '_');
-        console.log(path);
-        // replace special characters with _ in one line
-        path = path.replace(/[^a-zA-Z0-9_]/g, '');
+    const textArea = () => {
+        return (
+            <div className="row">
+                <div className="col-12">
+                    <textarea
+                        className="form-control"
+                        id="exampleFormControlTextarea1"
+                        rows="3"
+                        value={displayedValue}
+                        onChange={handleTextChange}
+                    />
+                </div>
+            </div>
+        )
+    }
 
-        return path;
+    function getFlowSteps() {
+        const actions = flowJson.FlowDefinitions[0].Actions;
+        // if any of the actions is a for-each, get the steps from the for-each
+        const substepItems = []
+        const steps = actions.map(step => {
+            const stepType = getStepType(step);
+            if (stepType === 'for-each') {
+                const properties = step.Input.Properties
+                // check if any of the properties is a for-each, if so, get the steps from the for-each
+                properties.forEach(property => {
+                    if (property.Name === 'RawProperty__Actions') {
+                        substepItems.push(...property.Items);
+                    }
+                });
+            }
+            return step
+        })
+        return [...steps, substepItems]
+    }
+
+    function getStepNames(steps, counter = 0, isSubstep = false, counterIncrement = 1) {
+        if (isSubstep) {
+            counterIncrement = 0.1
+        }
+        const stepNames = steps.map(step => {
+            // increment counter by counterIncrement, round to 2 decimal places
+            counter = Math.round((counter + counterIncrement) * 100) / 100;
+            return getStepName(step, counter, isSubstep)
+        })
+        return stepNames
+    }
+
+    function getStepName(step, counter, isSubstep, prefix = 'step') {
+        if (isSubstep) {
+            prefix = '  substep'
+        }
+
+        // check if step is not an array
+        if (!Array.isArray(step)) {
+            const label = step.Label
+            if (label) {
+                // remove all numbers at the beginning of the label
+                const labelWithoutNumber = label.replace(/^\d+/, '');
+                // remove all dots and whitespace at the beginning of the label
+                const labelWithoutNumberAndDots = labelWithoutNumber.replace(/^\.*\s*/, '');
+                return `${prefix}${counter}. ${labelWithoutNumberAndDots}`
+            } else {
+                const type = getStepType(step)
+                const name = getNameFromType(type)
+                return `${prefix}${counter}. ${name}`
+            }
+        } else {
+            // if step is an array, it is a substep
+            const substepNames = getStepNames(step, counter - 1, true)
+            return substepNames.join('\r')
+        }
+    }
+
+    function getStepType(step) {
+        return step.Type
+    }
+
+    function getNameFromType(type) {
+        switch (type) {
+            case 'json-parse':
+                return 'JSON Parse'
+            case 'for-each':
+                return 'For Each Loop'
+            case 'execute-templating-script':
+                return 'Templating Script'
+            case 'stop':
+                return 'Stop Action'
+            case 'email':
+                return 'Send Email'
+            case 'http-request':
+                return 'HTTP Request'
+            default:
+                return type
+        }
+    }
+
+    function getFlowTrigger() {
+        const trigger = flowJson.FlowDefinitions[0].Trigger;
+        return trigger
+    }
+
+    function processFlowTriggerDescription() {
+        const flowTrigger = getFlowTrigger()
+        const flowTriggerType = getStepType(flowTrigger)
+        console.log(flowTriggerType);
+        switch (flowTriggerType) {
+            case 'http-webhook':
+                setFlowTriggerDescripton('Allows a flow to be initiated based on a HTTP request. Response can be customized to subscribe a flow to an event source system.')
+                break
+            case 'http-webhook-with-parameters':
+                // changeme
+                setFlowTriggerDescripton('')
+                break
+            case 'http-webhook-with-parameters-and-custom-response':
+                // changeme
+                setFlowTriggerDescripton('')
+                break
+            default:
+                // changeme
+                setFlowTriggerDescripton('')
+        }
+    }
+
+    function generateTable() {
+        const steps = getFlowSteps();
+        const stepNames = getStepNames(steps);
+        setTableData(
+            <table id="stepsTable" className="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Step #</th>
+                        <th scope="col">Step Name</th>
+                        <th scope="col">Step Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">0</th>
+                        <td>Webhook (v2)</td>
+                        <td>{flowTriggerDescripton}</td>
+                    </tr>
+                    {stepNames.map((stepName, index) => {
+                        return (
+                            <tr key={index}>
+                                <th scope="row">{index + 1}</th>
+                                <td>{stepName}</td>
+                                <td>changeme</td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+        )
+    }
+
+    function toggleTableEdit() {
+        const table = document.getElementById("stepsTable");
+        if (table) {
+            table.contentEditable = table.contentEditable === "true" ? false : true
+        }
     }
 
     return (
         <div className="container">
-            {/* title, input text area, button with on click - execute printLiquidCodeFromJson function on json text from text area */}
-            <h1 className="display-4">Liquid Code Generator</h1>
+            <h1 className="display-4">Extension Kit Documentation Generator</h1>
             <hr />
             <small className="text-muted">
                 <p>
-                    This tool will generate liquid code from a json object.
-                </p>
-                <p>
-                    The generated liquid code will be displayed in the text area below.
+                    This tool will help you generate Extension Kit documentation.
                 </p>
             </small>
-            <div className="form-group">
-                <label htmlFor="json-textarea">JSON Text</label>
-                <textarea className="form-control" id="json-textarea" rows="10" onChange={handleJsonChange}></textarea>
-            </div>
-            <button className="btn btn-primary" onClick={() => console.log(json_object)}>Execute</button>
-            <div className="form-group">
-                <label htmlFor="liquid-code-textarea">Liquid Code</label>
-                <textarea className="form-control" id="liquid-code-textarea" rows="10" value={liquid_code} readOnly></textarea>
+            <div className="row">
+                <div className="col-12">
+                    <div className="form-group">
+                        {/* window for dropping files with dotted borders */}
+                        <DropzoneComponent textAreaFunction={setFlowJson} />
+                        {smallDescriptionTextArea}
+                    </div>
+                    <div className="form-group mt-3">
+                        {textArea()}
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            {tableData}
+                        </div>
+                        <div className="col-12 mt-2">
+                            <div className="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" className="btn btn-primary" onClick={toggleTableEdit}>Edit Table</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
